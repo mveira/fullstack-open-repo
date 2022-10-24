@@ -1,4 +1,4 @@
-# Fullstack Open
+# Full Stack open 2022
 
 ## Part 0b exercies 
 
