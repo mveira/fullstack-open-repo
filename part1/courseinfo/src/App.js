@@ -11,8 +11,6 @@ const Header = (props) => {
 const Part = (props) => {
   // Parts is passed an javascript object with two fields: name and exercises 
   return (
-
-
   <div>
     <p> {props.part.name}; {props.part.exercises} Exercises</p> 
   </div>
@@ -23,7 +21,6 @@ const Content = (props) => {
   // Content is passed an array with three elements named parts 
   return (
     <div>
-
       <Part part={props.parts[0]}/>
       <Part part={props.parts[1]}/>
       <Part part={props.parts[2]}/>
@@ -32,13 +29,11 @@ const Content = (props) => {
 }
 
 const Total = (props) => {
-  console.log(props.parts[1]['exercises'])
   return (
     <div>
        <p>Total exercises: {props.parts[0]['exercises'] + props.parts[1]['exercises'] + props.parts[2]['exercises']} </p>
     </div>
   )
-
 }
 
 const App = () => {
@@ -59,18 +54,15 @@ const App = () => {
       }
     ]
   }
-
   return (
     // The course name is passed to Header
     // The whole parts array is passed to Content and Total 
     <div>
       <Header course={course.name}/>
       <hr/>
-      <Content parts={course.parts}/>
-               
+      <Content parts={course.parts}/>       
       <Total parts={course.parts}/>
     </div>
   )
 }
-
 export default App
