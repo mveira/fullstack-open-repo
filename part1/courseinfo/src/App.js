@@ -12,7 +12,7 @@ const Part = (props) => {
   // Parts is passed an javascript object with two fields: name and exercises 
   return (
   <div>
-    <p> {props.part.name}; {props.part.exercises} Exercises</p> 
+    <p> {props.part.name}: {props.part.exercises} Exercises</p> 
   </div>
   )
 }
