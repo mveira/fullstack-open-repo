@@ -1,69 +1,64 @@
 import { useState, useEffect } from 'react'
 import axios from 'axios'
-
-const useField = (type) => {
-  const [value, setValue] = useState('')
-
-  const onChange = (event) => {
-    setValue(event.target.value)
-  }
-
-  return {
-    type,
-    value,
-    onChange
-  }
-}
-
-const useCountry = (name) => {
-  const [country, setCountry] = useState(null)
-
-  useEffect(() => {
-    axios
-    .get('https://restcountries.com/v3.1/all')
-    .then(response => {
-      setCountry(response.data)
-    })
-},[])
-
-  return country
-}
-
-const Country = ({ country }) => {
-  if (!country) {
-    return <div>not found...</div>
-  }
-
-  return (
-    <div>
-      <h3>{country.name.common}</h3>
-      <div>population {country.population}</div> 
-      <div>capital {country.capital}</div>
-      <img src={country.flags.png} height='100' alt={`flag of ${country.name.common}`}/> 
-    </div>
-  )  
-}
+import Countries from './components/Countries'
+import SearchFilter from './components/SearchFilter'
 
 const App = () => {
-  const nameInput = useField('text')
-  const [name, setName] = useState('')
-  const country = useCountry(name)
+  const [countries, setCountries] = useState([])
+  const [searchTerm, setSearchTerm] = useState("")
+  
+  
+  useEffect(() => {
+      axios
+      .get('https://restcountries.com/v3.1/all')
+      .then(response => {
+        setCountries(response.data)
+      })
+  },[])
 
-  const fetch = (e) => {
-    e.preventDefault()
-    setName(nameInput.value)
-  }
-
+  const handleSearchInputFilter = (event) => {
+    setSearchTerm(event.target.value)
+    }
+  
   return (
-    <div>
-      <form onSubmit={fetch}>
-        <input {...nameInput} />
-        <button>find</button>
-      </form>
 
-      <Country country={country} />
+ <div>
+    <div>
+      find countries <input 
+        value={searchTerm}  
+        onChange={handleSearchInputFilter}
+      />
     </div>
-  )
+    <h1>Countries</h1>
+   
+    
+    {   
+        countries.filter(country => 
+          country.name.official.toLowerCase()
+              .includes(searchTerm
+              .toLowerCase())
+          )
+          .sort().map(country =>
+
+          <div>
+          <section>
+            <h2>Country: {country.name.common}</h2>
+            
+            <p>Capital: {country.capital}</p>
+            <p>Area: {country.area}</p>
+            <h2>languages:</h2>
+            <ul>
+              {country.languages ? Object.values(country.languages).map(i => <li>{i}</li>)
+              : null}
+            </ul>
+            <div>{country.flag}</div>
+        </section>
+        </div>  
+      )
+    }
+
+    </div>
+  );
 }
 
-export default App
+export default App;

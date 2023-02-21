@@ -1,8 +1,14 @@
-const Person = (props) => {
+const Person = (person, props) => {
+    console.log('person component',props)
     return(
-        <div>
-            <p>{props.name}: {props.number}</p>
-        </div>
+        <>
+        
+            <li>{person.name} : {person.number} 
+                <button onClick={() => props.onDelete(person.id)} >Delete</button>
+            </li>
+       
+        </>
+
     )
-}
+        }
 export default Person

@@ -38,7 +38,7 @@ const App = () => {
               .includes(searchTerm
               .toLowerCase())
           )
-          .slice(0, 10).sort().map(country =>
+          .sort().map(country =>
 
           <div>
           <section>

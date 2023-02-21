@@ -1,14 +1,19 @@
-import Person from './Person'
 const Persons = (props) => {
-    const filteredPersons = !props.searchTerm
-        ? props.persons
-        : props.persons.filter(person => person.name.toLowerCase().includes(props.searchTerm.toLowerCase()))
-        return(
-        <div>  
-            <h2>Numbers</h2>
-            {filteredPersons.map(person => <Person name={person.name} number={person.number}/>)}
-        </div>
+    console.log(props)
+    return(
+<>
+<h3>Contacts</h3>
+ <ul>
+ {props.persons.map(person =>    <li id={person.id}>
+                                 {person.name} : {person.number}
+                                 <button onClick={() => props.onDelete(person.id)} >Delete</button>      
+                                </li>
+                    )
+}
+ </ul>
+ </>
     )
 }
+
 export default Persons
 
