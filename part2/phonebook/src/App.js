@@ -12,104 +12,111 @@ const App = () => {
 
   
   useEffect(() => {
-    console.log('effect')
-    personsService    
-        .getAll()      
-        .then( initialPerson => {
-            console.log('promise fulfilled') 
-            setPersons(initialPerson)
-
+      console.log('effect')
+      personsService    
+          .getAll()      
+          .then( initialPerson => {
+                console.log('promise fulfilled') 
+                setPersons(initialPerson)
         })
-      },[]) 
-
-  const handleAddPerson = (event) => {
-    event.preventDefault()
-    const personObj = {
-      ...(isFound === true && alert( `The name ${newName} already exits to the phone book`)),
-      ...(isFound === false &&  {name:newName}),
-      ...({number:newNumber}),
-    } 
-    
-    personsService 
-            .create(personObj)
-            .then(returnedPerson => {
-                console.log('promise fulfilled', returnedPerson) 
-                setPersons(persons.concat(returnedPerson))
-                setNewName('')
-                setNewNumber('')
-                
-            })
+  },[]) 
+ 
+  const addPerson = (persons) => {
+    console.log('add person')
+    const newPersonObj = {
+      name: newName,
+      number: newNumber
     }
+    personsService
+    .create(newPersonObj)
+    .then(returnedPerson => {
+      setPersons(persons.concat(returnedPerson))
+    } )  
+  }
 
-    const isFound = persons.some(element => {
-      // Use's the some array function to check's if the name exists in the persons array array.
-      // It also checks if the name's spelled with capitals,
-      // it only looks if the first name is capitalized 
-      if (element.name === newName) {
-        return true
-      }
-      return false
-    })
+  const updatePerson = (id, persons) => {
+    console.log('update person')
+    const person = persons.find(p => p.id === id)
 
-    const handleDelete = (id) => {
-      console.log('deleting...')
-      if (window.confirm( `Are you sure you want to delete ?`)) {
-      
-          personsService 
-          .del(id)
-          .then(() => {
-          console.log('promise fulfilled. Person deleted') 
-          setPersons(persons.filter(p => p.id !== id))
-          
+    console.log("person =", person)
+    if(window.confirm( `${newName} already exists in the phone book would uou like to update the number ?`)){  
+      //create a copy of a person object with the change number
+      const changedNumber = {...person, number: newNumber}
+      //update number with person service 
+      personsService
+      .update(id, changedNumber)
+      .then(response => {
+        setPersons(persons.map(person => person.id !== id ? person : response))
+        setNewName("")
+        setNewNumber("")
       })
-      }
-            
-    }
+    } 
+      
+  }
 
-  const handleUpdate = () => {
-    
+  const addNewPersonHandler = (event) => {
+    console.log('addNewPersonHandler')
+      event.preventDefault()
+    const person = persons.find(person => person.name === newName)
+      person ? updatePerson(person.id, persons): addPerson(persons)
+        //update number
+  }
+
+  const handleDelete = (id) => {
+    if (window.confirm( `Are you sure you want to delete ?`)){
+        personsService 
+        .del(id)
+        .then(() => {
+        setPersons(persons.filter(p => p.id !== id))   
+    })
+    }
   }
 
   const handleNameFilter = (event) => {   
-      console.log(event.target.value)    
       setSearchTerm(event.target.value)  
   }
 
-  const handleNameChange = (event) => {
-    console.log(event.target.value)    
+  const handleNameChange = (event) => {  
     setNewName(event.target.value)
   }
 
   const handleNumberChange = (event) => {
-    console.log(event.target.value)   
     setNewNumber(event.target.value)
   }
 
   const PersonsToShow = !searchTerm
   ? persons
-  : persons.filter(person => 
-          person.name.toLowerCase().includes(searchTerm.toLowerCase()))
-
+  : persons.filter(person => person.name
+                            .toLowerCase()
+                            .includes(searchTerm.toLowerCase())
+                            )
+  
   return (
   <>  
       <h2>Phone book</h2>
+
       <SearchFilter 
           searchTerm={searchTerm} 
           handleChange={(event)=> handleNameFilter(event)}
         /> 
   
-      <Persons persons={PersonsToShow}
-               onDelete={handleDelete}
-              />
+      
+      <h3>Add a new</h3>
     
        <AddPersonForm
-           submitPerson={handleAddPerson}
+           submitPerson={addNewPersonHandler}
            name={newName}
            number={newNumber}
            nameChangeHandler={handleNameChange}
            numberChangeHandler={handleNumberChange}
            
        />
+
+      <h3>Numbers</h3>
+
+      <Persons persons={PersonsToShow}
+               onDelete={handleDelete}
+              />
   </>
   )
   }

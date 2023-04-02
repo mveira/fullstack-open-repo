@@ -3,7 +3,6 @@ function Form(props) {
 
   return (
     <>
-    <h3>Add contact</h3>
     <form onSubmit={props.submitPerson}>
       <label>
       Name:

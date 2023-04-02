@@ -1,0 +1,7 @@
+8th march
+
+- fix add person 
+
+- add the option to update a phone number if a persons name exists
+    - problem 
+    the put request is creating a new object instead of updating

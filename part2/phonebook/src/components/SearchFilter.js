@@ -1,7 +1,7 @@
 const SearchFilter = (props) => {
     return (
         <div>
-            filter name with:
+            Filter name with:
         <input
         value={props.searchTerm}
         onChange={props.handleChange}/>
