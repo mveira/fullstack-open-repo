@@ -1,8 +1,8 @@
 import { useState, useEffect } from 'react'
 import personsService from './services/persons'
 import Persons from './components/Persons'
-import SearchFilter from './components/SearchFilter'
-import AddPersonForm from './components/AddPersonForm'
+import Filter from './components/SearchFilter'
+import Form from './components/AddPersonForm'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
@@ -95,7 +95,7 @@ const App = () => {
   <>  
       <h2>Phone book</h2>
 
-      <SearchFilter 
+      <Filter 
           searchTerm={searchTerm} 
           handleChange={(event)=> handleNameFilter(event)}
         /> 
@@ -103,7 +103,7 @@ const App = () => {
       
       <h3>Add a new</h3>
     
-       <AddPersonForm
+       <Form
            submitPerson={addNewPersonHandler}
            name={newName}
            number={newNumber}
