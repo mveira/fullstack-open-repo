@@ -1,61 +1,77 @@
 import { useState, useEffect } from 'react'
+
 import personsService from './services/persons'
+
 import Persons from './components/Persons'
 import Filter from './components/SearchFilter'
 import Form from './components/AddPersonForm'
+import Notification from './components/Notification'
 
 const App = () => {
   const [persons, setPersons] = useState([]) 
-  const [newName, setNewName] = useState()
-  const [newNumber, setNewNumber] = useState()
-  const [searchTerm, setSearchTerm] = useState()
+  const [newName, setNewName] = useState('')
+  const [newNumber, setNewNumber] = useState('')
+  const [searchTerm, setSearchTerm] = useState('')
+  const [message, setMessage] = useState('')
+  const [isSuccess, setIsSuccsess] = useState(false)
 
-  
   useEffect(() => {
       console.log('effect')
       personsService    
           .getAll()      
           .then( initialPerson => {
-                console.log('promise fulfilled') 
+                // console.log('promise fulfilled') 
                 setPersons(initialPerson)
         })
-  },[]) 
- 
+  }, [])
+  
   const addPerson = (persons) => {
-    console.log('add person')
     const newPersonObj = {
       name: newName,
       number: newNumber
     }
+
     personsService
     .create(newPersonObj)
     .then(returnedPerson => {
       setPersons(persons.concat(returnedPerson))
-    } )  
-  }
+      setIsSuccsess(true)
+      // console.log( 'message:', isSuccess)
+      setMessage(
+        ` '${returnedPerson.name}' was added to phone book`
+      )
+      setTimeout(() => {
+        setMessage(null)
+         }, 5000);
+      setNewName('');
+      setNewNumber('');
+      
+        })
+  } 
 
-  const updatePerson = (id, persons) => {
-    console.log('update person')
+  const updatePerson = (id) => {
     const person = persons.find(p => p.id === id)
-
-    console.log("person =", person)
     if(window.confirm( `${newName} already exists in the phone book would uou like to update the number ?`)){  
       //create a copy of a person object with the change number
       const changedNumber = {...person, number: newNumber}
       //update number with person service 
       personsService
-      .update(id, changedNumber)
-      .then(response => {
-        setPersons(persons.map(person => person.id !== id ? person : response))
+      .update(id, changedNumber).then(response => {
+        setPersons(persons.map(person => person.id !== id ? person : response)) 
+        setIsSuccsess(true)
         setNewName("")
         setNewNumber("")
       })
+      .catch( error => {
+        console.log("Error")
+        setIsSuccsess(false)
+        setPersons(person.filter(person => person.id !==  id))
+      })
     } 
-      
   }
 
   const addNewPersonHandler = (event) => {
-    console.log('addNewPersonHandler')
+    // console.log('addNewPersonHandler')
       event.preventDefault()
     const person = persons.find(person => person.name === newName)
       person ? updatePerson(person.id, persons): addPerson(persons)
@@ -63,12 +79,12 @@ const App = () => {
   }
 
   const handleDelete = (id) => {
+    // console.log('id',persons.filter(p => p.id === 1 ))
     if (window.confirm( `Are you sure you want to delete ?`)){
         personsService 
         .del(id)
-        .then(() => {
-        setPersons(persons.filter(p => p.id !== id))   
-    })
+        .then((id) => {setPersons(persons.filter(p => p.id !== id))})
+        
     }
   }
 
@@ -86,38 +102,30 @@ const App = () => {
 
   const PersonsToShow = !searchTerm
   ? persons
-  : persons.filter(person => person.name
+  : persons.filter( person => person.name
                             .toLowerCase()
-                            .includes(searchTerm.toLowerCase())
-                            )
-  
+                            .includes(searchTerm.toLowerCase()) )
+                          
   return (
   <>  
       <h2>Phone book</h2>
 
-      <Filter 
-          searchTerm={searchTerm} 
-          handleChange={(event)=> handleNameFilter(event)}
-        /> 
-  
+      <Notification message={message}  isSuccess={isSuccess}/>
+
+      <Filter searchTerm={searchTerm} handleChange={(event)=> handleNameFilter(event)}/>
       
       <h3>Add a new</h3>
-    
+       
        <Form
            submitPerson={addNewPersonHandler}
            name={newName}
            number={newNumber}
            nameChangeHandler={handleNameChange}
-           numberChangeHandler={handleNumberChange}
-           
-       />
-
+           numberChangeHandler={handleNumberChange}/>
       <h3>Numbers</h3>
-
-      <Persons persons={PersonsToShow}
-               onDelete={handleDelete}
-              />
-  </>
+      
+      <Persons persons={PersonsToShow} onDelete={handleDelete}/>
+      </>
   )
   }
 

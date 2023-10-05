@@ -30,32 +30,28 @@ const App = () => {
       />
     </div>
     <h1>Countries</h1>
-   
-    
     {   
-        countries.filter(country => 
-          country.name.official.toLowerCase()
-              .includes(searchTerm
-              .toLowerCase())
-          )
-          .sort().map(country =>
-
-          <div>
-          <section>
-            <h2>Country: {country.name.common}</h2>
-            
-            <p>Capital: {country.capital}</p>
-            <p>Area: {country.area}</p>
-            <h2>languages:</h2>
-            <ul>
-              {country.languages ? Object.values(country.languages).map(i => <li>{i}</li>)
-              : null}
-            </ul>
-            <div>{country.flag}</div>
-        </section>
-        </div>  
-      )
-    }
+      countries.filter(country => 
+        country.name.official.toLowerCase()
+            .includes(searchTerm
+            .toLowerCase())
+        ).sort().map(country =>
+                    <div>
+                    <section>
+                      <h2>Country: {country.name.common}</h2>
+                      
+                      <p>Capital: {country.capital}</p>
+                      <p>Area: {country.area}</p>
+                      <h2>languages:</h2>
+                      <ul>
+                        {country.languages ? Object.values(country.languages).map(i => <li>{i}</li>)
+                        : null}
+                      </ul>
+                      <div>{country.flag}</div>
+                  </section>
+                  </div>  
+                )
+      }
 
     </div>
   );

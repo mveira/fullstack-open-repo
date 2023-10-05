@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import axios from 'axios'
 import Countries from './components/Countries'
 import SearchFilter from './components/SearchFilter'
+import Country from './components/Country'
 
 const App = () => {
   const [countries, setCountries] = useState([])
@@ -16,48 +17,30 @@ const App = () => {
       })
   },[])
 
-  const handleSearchInputFilter = (event) => {
-    setSearchTerm(event.target.value)
+  const fetch = (e) => {
+    e.preventDefault()
+    setSearchTerm(e.target.value)
+    console.log(searchTerm)
     }
-  
-  return (
 
- <div>
-    <div>
-      find countries <input 
-        value={searchTerm}  
-        onChange={handleSearchInputFilter}
-      />
-    </div>
-    <h1>Countries</h1>
-   
+  const countriesToDisplay = countries.filter(country => country.name.common.toLowerCase().indexOf(searchTerm) > -1)
     
-    {   
-        countries.filter(country => 
-          country.name.official.toLowerCase()
-              .includes(searchTerm
-              .toLowerCase())
-          )
-          .sort().map(country =>
-
-          <div>
-          <section>
-            <h2>Country: {country.name.common}</h2>
-            
-            <p>Capital: {country.capital}</p>
-            <p>Area: {country.area}</p>
-            <h2>languages:</h2>
-            <ul>
-              {country.languages ? Object.values(country.languages).map(i => <li>{i}</li>)
-              : null}
-            </ul>
-            <div>{country.flag}</div>
-        </section>
-        </div>  
-      )
+  return (
+    <>
+    <form onChange={fetch}>
+        find country<input/>
+      </form>
+    {
+      searchTerm? 
+        countriesToDisplay.length <= 10 ? 
+          countriesToDisplay.length === 1 ? 
+             <Country country={countriesToDisplay[0]}></Country>
+           : <Countries countries={countriesToDisplay}></Countries>
+            // :countriesToDisplay.map((country, index) => <div key={index}>{country.name.common}</div>)  // will display a list of countrys relating to the search term  
+        :"Too many matches, specify another filter"
+      :""  
     }
-
-    </div>
+    </>
   );
 }
 

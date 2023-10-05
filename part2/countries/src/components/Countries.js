@@ -1,13 +1,17 @@
-import Country from './Country'
+
+
+
 const Countries = (props) => {
-    // const filteredCountries = !props.searchTerm
-    //     ? props.countries
-    //     : props.countries.filter(country => country.name.toLowerCase().includes(props.searchTerm.toLowerCase()))
+    const show =  ()  => {
+
+    }
         return(
-        <div>  
-            <h2>Numbers</h2>
-            {props.countries.map(country => <Country name={country.name}/>)}
-        </div>
+            props.countries.map((country, index) => <form onSubmit={show()}> 
+                                                        <div>
+                                                            <text key={index}>{country.name.common}</text>
+                                                            <button type="submit" >Show</button>   
+                                                        </div> 
+                                                    </form>)
     )
 }
 export default Countries
